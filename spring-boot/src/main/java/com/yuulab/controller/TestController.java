@@ -10,10 +10,10 @@ import com.yuulab.controller.request.TestRequest;
 @RestController
 public class TestController {
 
-	@PostMapping(value="/", produces=MediaType.TEXT_PLAIN_VALUE)
+	@PostMapping(value = "/", produces = MediaType.TEXT_PLAIN_VALUE)
 	public String post(@RequestBody TestRequest body) {
-	  System.out.println(body);
-		return "hello world";
+		System.out.println(body);
+		return body.toString();
 	}
 
 }

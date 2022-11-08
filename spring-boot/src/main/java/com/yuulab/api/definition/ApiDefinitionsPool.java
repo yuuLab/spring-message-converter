@@ -11,29 +11,30 @@ public class ApiDefinitionsPool {
 
 	private static Map<String, List<RequestParam>> requestParamsMap = creageApiDefinitions();
 
-
 	private ApiDefinitionsPool() {
 		// do nothing.
 	}
-
 
 	public static Map<String, List<RequestParam>> getRequestParams() {
 		return requestParamsMap;
 	}
 
 	private static Map<String, List<RequestParam>> creageApiDefinitions() {
-		// 動作確認テスト用
+		// データテーブルやプロパティファイルにAPIの定義を登録し、オンメモリでプールしておく。
+		// 以下動作確認テスト用
 
-		RequestParam param1 = new RequestParam(0, 5, "firstName");
-		RequestParam param2 = new RequestParam(6, 10, "lastName");
+		Map<String, List<RequestParam>> map = new HashMap<>();
+		map.put(TestRequest.class.getName(), getTestRequestDefinition());
+		return map;
+	}
+
+	private static List<RequestParam> getTestRequestDefinition() {
+		RequestParam param1 = new RequestParam(1, 10, "firstName", 20);
+		RequestParam param2 = new RequestParam(11, 20, "lastName", 20);
 		List<RequestParam> requestParams = new ArrayList<>();
 		requestParams.add(param1);
 		requestParams.add(param2);
-
-		Map<String, List<RequestParam>> map = new HashMap<>();
-		map.put(TestRequest.class.getName(), requestParams);
-
-		return map;
+		return requestParams;
 	}
 
 }
