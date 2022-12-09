@@ -2,13 +2,12 @@ package com.yuulab.api.converter;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.yuulab.api.definition.ApiDefinitionsPool;
-import com.yuulab.api.definition.RequestParam;
+import com.yuulab.api.definition.FixedLenghBody;
+import com.yuulab.api.definition.FixedLengthParam;
 
 public class RequestPlainTextConverter {
 
@@ -19,16 +18,17 @@ public class RequestPlainTextConverter {
 		TYPE obj = null;
 		try {
 			Constructor<TYPE> constructor = clazz.getConstructor();
+			FixedLenghBody fixedLenghBody = clazz.getAnnotation(FixedLenghBody.class);
+			int totalLength = fixedLenghBody.length();
+			if (totalLength != body.length()) {
+				// TODO throw error
+				throw new RuntimeException("total length = " + totalLength + ", body length = " + body.length());
+			}
 			obj = constructor.newInstance();
-
-			List<RequestParam> params = ApiDefinitionsPool.getRequestParams().get(clazz.getName());
 			for (Field field : clazz.getDeclaredFields()) {
-				for (RequestParam param : params) {
-					if (Objects.equals(param.fieldName, field.getName())) {
-						field.setAccessible(true);
-						field.set(obj, StringUtils.substring(body, param.start - 1, param.end));
-					}
-				}
+				FixedLengthParam param = field.getAnnotation(FixedLengthParam.class);
+				field.setAccessible(true);
+				field.set(obj, StringUtils.substring(body, param.startIndex()-1, param.endIndex()));
 			}
 		} catch (Exception e) {
 			// TODO システムごとにログ出力や例外処理を記述する。
@@ -37,5 +37,4 @@ public class RequestPlainTextConverter {
 
 		return obj;
 	}
-
 }
