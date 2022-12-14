@@ -11,7 +11,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @FixedLenghBody(length = 40)
-public class TestRequest implements Serializable {
+public class TestPlainTextRequest implements FixedLengthRequest, Serializable {
 
 	@FixedLengthParam(startIndex = 1, endIndex = 10, length = 10)
 	public String firstName;

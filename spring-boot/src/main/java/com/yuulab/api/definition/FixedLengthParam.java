@@ -21,6 +21,6 @@ public @interface FixedLengthParam {
 	/** end index. */
 	int endIndex();
 
-	/** length. */
+	/** a parameter length. */
 	int length();
 }

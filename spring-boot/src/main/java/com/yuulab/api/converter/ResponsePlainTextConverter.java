@@ -9,9 +9,9 @@ import org.apache.commons.lang3.StringUtils;
 import com.yuulab.api.definition.FixedLenghBody;
 import com.yuulab.api.definition.FixedLengthParam;
 
-public class RequestPlainTextConverter {
+public class ResponsePlainTextConverter {
 
-	public static <TYPE extends Object> TYPE convertRequest(Class<TYPE> clazz, String body) {
+	public static <TYPE extends Object> TYPE convertResponse(Class<TYPE> clazz, String body) {
 		Objects.requireNonNull(clazz);
 		Objects.requireNonNull(body);
 
