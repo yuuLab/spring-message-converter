@@ -1,13 +1,13 @@
-package com.yuulab.api.converter;
+package com.yuulab.http.converter;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.tomcat.util.codec.binary.StringUtils;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpMessage;
 import org.springframework.http.HttpOutputMessage;
@@ -20,9 +20,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StreamUtils;
 
-import com.yuulab.api.definition.FixedLenghBody;
-import com.yuulab.api.definition.FixedLengthParam;
-
 public class PlainTextHttpMessageConverter implements HttpMessageConverter<Object> {
 
 	private static final List<MediaType> SUPPORT_MEDIA_TYPES = Arrays.asList(MediaType.TEXT_PLAIN);
@@ -30,12 +27,6 @@ public class PlainTextHttpMessageConverter implements HttpMessageConverter<Objec
 	private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
 	private static final MediaType DEFAULT_MEDIA_TYPE = MediaType.TEXT_PLAIN;
-
-	private static final String EMPTY_VALUE = "";
-
-	private static final String HALF_WIDTH = " ";
-
-	private static final String FULL_WIDTH = "@";
 
 	@Override
 	public boolean canRead(Class<?> clazz, @Nullable MediaType mediaType) {
@@ -56,73 +47,29 @@ public class PlainTextHttpMessageConverter implements HttpMessageConverter<Objec
 	public Object read(Class<? extends Object> clazz, HttpInputMessage inputMessage)
 			throws IOException, HttpMessageNotReadableException {
 		String body = StreamUtils.copyToString(inputMessage.getBody(), this.getCharset(inputMessage));
-		System.out.println("yRequest Bodyz" + body);
-
 		if (Objects.isNull(clazz) || Objects.isNull(body)) {
 			return null;
 		}
-		return RequestPlainTextConverter.convertRequest(clazz, body);
+		return TextPlainToObjConverter.convert(clazz, body);
 	}
 
 	@Override
 	public void write(Object t, @Nullable MediaType contentType, HttpOutputMessage outputMessage)
 			throws IOException, HttpMessageNotWritableException {
-		System.out.println("yResponse Bodyz" + t.toString());
-
 		contentType = this.getContentType(contentType);
 		outputMessage.getHeaders().setContentType(contentType);
 
 		Charset charset = contentType.getCharset();
 		Assert.notNull(charset, "No charset"); // should never occur
 
-		byte[] bytes = convertResponse(t).getBytes();
+		byte[] bytes = StringUtils.getBytesUtf8(ObjToTextPlainConverter.convert(t));
 		outputMessage.getHeaders().setContentLength(bytes.length);
 		if (outputMessage instanceof StreamingHttpOutputMessage) {
 			StreamingHttpOutputMessage streamingOutputMessage = (StreamingHttpOutputMessage) outputMessage;
 			streamingOutputMessage.setBody(outputStream -> StreamUtils.copy(bytes, outputStream));
-		}
-		else {
+		} else {
 			StreamUtils.copy(bytes, outputMessage.getBody());
 		}
-	}
-
-	private String convertResponse(Object t) {
-		String res = "";
-		try {
-
-			if (t.getClass().isAnnotationPresent(FixedLenghBody.class)) {
-				Class<? extends Object> clazz = t.getClass();
-				FixedLenghBody fixedLenghBody = clazz.getAnnotation(FixedLenghBody.class);
-				int totalLength = fixedLenghBody.length();
-
-				StringBuilder sb = new StringBuilder();
-
-				for (Field field : clazz.getDeclaredFields()) {
-					FixedLengthParam param = field.getAnnotation(FixedLengthParam.class);
-					field.setAccessible(true);
-					String val = this.appendHalfWidth(field.get(t).toString(), param.length());
-					sb.append(val);
-				}
-				res = sb.toString();
-			}
-		} catch (IllegalArgumentException | IllegalAccessException e) {
-			e.printStackTrace();
-			throw new RuntimeException();
-		}
-		return res;
-	}
-
-
-	private String appendHalfWidth(String str, int length) {
-		if (Objects.isNull(str)) {
-			str = "";
-		}
-		StringBuilder sb = new StringBuilder();
-		sb.append(str);
-		for (int i = 0; i < length - str.length(); i++) {
-			sb.append(HALF_WIDTH);
-		}
-		return sb.toString();
 	}
 
 	private boolean isSupportMediaType(MediaType mediaType) {
@@ -154,5 +101,4 @@ public class PlainTextHttpMessageConverter implements HttpMessageConverter<Objec
 		}
 		return contentType;
 	}
-
 }
