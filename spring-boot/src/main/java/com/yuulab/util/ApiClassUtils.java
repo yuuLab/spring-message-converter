@@ -2,36 +2,36 @@ package com.yuulab.util;
 
 public class ApiClassUtils {
 
-	private ApiClassUtils() {
-		// do nothing.
-	}
+  private ApiClassUtils() {
+    // do nothing.
+  }
 
+  /**
+   * æŒ‡å®šã•ã‚ŒãŸã‚¯ãƒ©ã‚¹ã«å¤‰æ›ã™ã‚‹ã€‚ä»¥ä¸‹å¤‰æ›ã‚µãƒãƒ¼ãƒˆã‚¯ãƒ©ã‚¹ã€‚
+   *
+   * <pre>int, short, long, double, float, boolean, byte</pre>
+   *
+   * <pre>String, Integer, Short, Long, Double, Float, Boolean, Byte, BigDecimal</pre>
+   *
+   * @param clazz å¤‰æ›å…ˆã‚¯ãƒ©ã‚¹
+   * @param value å¤‰æ›å¯¾è±¡
+   * @return converted value
+   */
+  public static Object toTargetClass(Class<?> clazz, String value) {
+    if (clazz == null) return value;
+    if (clazz.isPrimitive()) return toTargetPrimitiveClass(clazz, value);
 
-	/**
-	 * w’è‚µ‚½ƒNƒ‰ƒX‚É•¶š—ñ‚ğ•ÏŠ·‚·‚éB•ÏŠ·‚Å‚«‚È‚¢ê‡‚Í<code>value</code>‚ğ‚»‚Ì‚Ü‚Ü•Ô‹p‚·‚éB<br>
-	 * ˆÈ‰ºŒ^‚Ö‚Ì•ÏŠ·‚ğƒTƒ|[ƒgB
-	 * <pre>int, short, long, double, float, boolean, byte</pre>
-	 * <pre>String, Integer, Short, Long, Double, Float, Boolean, Byte, BigDecimal</pre>
-	 *
-	 * @param clazz •ÏŠ·æƒNƒ‰ƒX
-	 * @param value •ÏŠ·‘ÎÛ
-	 * @return converted value
-	 */
-	public static Object toTargetClass(Class<?> clazz, String value) {
-		if (clazz == null) return value;
-		if (clazz.isPrimitive()) return toTargetPrimitiveClass(clazz, value);
+    return value;
+  }
 
-		return value;
-	}
-
-	private static Object toTargetPrimitiveClass(Class<?> clazz, String value) {
-		if (int.class.isAssignableFrom(clazz)) return Integer.parseInt(value);
-		if (long.class.isAssignableFrom(clazz)) return Long.parseLong(value);
-		if (double.class.isAssignableFrom(clazz)) return Double.parseDouble(value);
-		if (short.class.isAssignableFrom(clazz)) return Short.parseShort(value);
-		if (float.class.isAssignableFrom(clazz)) return Float.parseFloat(value);
-		if (boolean.class.isAssignableFrom(clazz)) return Boolean.parseBoolean(value);
-		if (byte.class.isAssignableFrom(clazz)) return Byte.parseByte(value);
-		return value;
-	}
+  private static Object toTargetPrimitiveClass(Class<?> clazz, String value) {
+    if (int.class.isAssignableFrom(clazz)) return Integer.parseInt(value);
+    if (long.class.isAssignableFrom(clazz)) return Long.parseLong(value);
+    if (double.class.isAssignableFrom(clazz)) return Double.parseDouble(value);
+    if (short.class.isAssignableFrom(clazz)) return Short.parseShort(value);
+    if (float.class.isAssignableFrom(clazz)) return Float.parseFloat(value);
+    if (boolean.class.isAssignableFrom(clazz)) return Boolean.parseBoolean(value);
+    if (byte.class.isAssignableFrom(clazz)) return Byte.parseByte(value);
+    return value;
+  }
 }

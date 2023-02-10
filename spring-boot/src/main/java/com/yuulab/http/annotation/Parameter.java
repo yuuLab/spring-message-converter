@@ -6,34 +6,33 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * ƒŠƒNƒGƒXƒg“d•¶EƒŒƒXƒ|ƒ“ƒX“d•¶‚ÌŒÅ’è’·ƒ}ƒbƒsƒ“ƒOƒAƒmƒe[ƒVƒ‡ƒ“B
+ * APIãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿å®šç¾©ã€‚
  *
  * @author yuuLab
- *
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Parameter {
 
-	public enum Justified {
-		/** ‰E–„‚ßB*/
-		RIGHT,
-		/** ¶–„‚ßB*/
-		LEFT
-	}
+  public enum Justified {
+    /** å³åŸ‹ã‚ã€‚ */
+    RIGHT,
+    /** å·¦åŸ‹ã‚ */
+    LEFT
+  }
 
-	/** ŠJnˆÊ’uB */
-	int startIndex();
+  /** é–‹å§‹ä½ç½®ã€‚ */
+  int startIndex();
 
-	/** I—¹ˆÊ’uB */
-	int endIndex();
+  /** çµ‚äº†ä½ç½®ã€‚ */
+  int endIndex();
 
-	/** ’·‚³B */
-	int length();
+  /** é•·ã•ã€‚ */
+  int length();
 
-	/** ƒpƒfƒBƒ“ƒO•¶šBƒfƒtƒHƒ‹ƒg’l=”¼ŠpƒXƒy[ƒXB*/
-	String paddingWith() default " ";
+  /** ãƒ‘ãƒ‡ã‚£ãƒ³ã‚°æ–‡å­—ã€‚ */
+  String paddingWith() default " ";
 
-	/** ƒpƒfƒBƒ“ƒO•ûŒüBƒfƒtƒHƒ‹ƒg’l=‰E–„‚ßB*/
-	Justified justified() default Justified.RIGHT;
+  /** ãƒ‘ãƒ‡ã‚£ãƒ³ã‚°æ–¹å‘ã€‚ */
+  Justified justified() default Justified.RIGHT;
 }
